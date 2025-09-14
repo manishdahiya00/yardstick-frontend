@@ -12,6 +12,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useAuth } from "@/providers/AuthProvider";
+import { Loader } from "lucide-react";
 
 type Note = {
   id: string;
@@ -183,56 +184,59 @@ export default function Notes() {
         onUpgradeSuccess={fetchTenant}
       />
 
-      {/* Notes Table */}
-      <div className="overflow-x-auto mt-4 w-full">
-        <table className="min-w-full border-collapse border border-gray-200">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="border border-gray-200 px-4 py-2">Title</th>
-              <th className="border border-gray-200 px-4 py-2">Content</th>
-              <th className="border border-gray-200 px-4 py-2">Created At</th>
-              <th className="border border-gray-200 px-4 py-2">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {notes.length === 0 ? (
-              <tr>
-                <td colSpan={4} className="text-center py-4">
-                  No notes found.
-                </td>
+      {loading ? (
+        <div className="mt-4 w-full flex justify-center text-gray-500">
+          <Loader className="animate-spin" />
+        </div>
+      ) : (
+        <div className="overflow-x-auto mt-4 w-full">
+          <table className="min-w-full border-collapse border border-gray-200">
+            <thead>
+              <tr className="bg-gray-100">
+                <th className="border border-gray-200 px-4 py-2">Title</th>
+                <th className="border border-gray-200 px-4 py-2">Content</th>
+                <th className="border border-gray-200 px-4 py-2">Created At</th>
+                <th className="border border-gray-200 px-4 py-2">Actions</th>
               </tr>
-            ) : (
-              notes.map((note) => (
-                <tr key={note.id} className="break-words">
-                  <td className="border border-gray-200 px-4 py-2 max-w-xs truncate">
-                    {note.title}
-                  </td>
-                  <td className="border border-gray-200 px-4 py-2 max-w-xs break-words">
-                    {note.content}
-                  </td>
-                  <td className="border border-gray-200 px-4 py-2">
-                    {new Date(note.createdAt).toLocaleString()}
-                  </td>
-                  <td className="border border-gray-200 px-4 py-2 text-center flex gap-2 justify-center flex-wrap">
-                    <Button size="sm" onClick={() => handleEditNote(note)}>
-                      Edit
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="destructive"
-                      onClick={() => handleDeleteNote(note.id)}
-                    >
-                      Delete
-                    </Button>
+            </thead>
+            <tbody>
+              {notes.length === 0 ? (
+                <tr>
+                  <td colSpan={4} className="text-center py-4">
+                    No notes found.
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
-
-      {loading && <p className="mt-4 text-gray-500">Loading notes...</p>}
+              ) : (
+                notes.map((note) => (
+                  <tr key={note.id} className="break-words">
+                    <td className="border border-gray-200 px-4 py-2 max-w-xs truncate">
+                      {note.title}
+                    </td>
+                    <td className="border border-gray-200 px-4 py-2 max-w-xs break-words">
+                      {note.content}
+                    </td>
+                    <td className="border border-gray-200 px-4 py-2">
+                      {new Date(note.createdAt).toLocaleString()}
+                    </td>
+                    <td className="border border-gray-200 px-4 py-2 text-center flex gap-2 justify-center flex-wrap">
+                      <Button size="sm" onClick={() => handleEditNote(note)}>
+                        Edit
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        onClick={() => handleDeleteNote(note.id)}
+                      >
+                        Delete
+                      </Button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 }

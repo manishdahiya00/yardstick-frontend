@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/select";
 import { useAuth } from "@/providers/AuthProvider";
 import { password } from "bun";
+import { Loader } from "lucide-react";
 
 function Modal({
   open,
@@ -162,60 +163,63 @@ export default function Users() {
         </form>
       </Modal>
 
-      {/* Users Table */}
-      <div className="overflow-x-auto">
-        <table className="w-full border-collapse border border-gray-200">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="border border-gray-200 px-4 py-2">Name</th>
-              <th className="border border-gray-200 px-4 py-2">Email</th>
-              <th className="border border-gray-200 px-4 py-2">Role</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.length === 0 ? (
-              <tr>
-                <td colSpan={3} className="text-center py-4">
-                  No users found.
-                </td>
+      {loading ? (
+        <div className="mt-4 w-full flex justify-center text-gray-500">
+          <Loader className="animate-spin" />
+        </div>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse border border-gray-200">
+            <thead>
+              <tr className="bg-gray-100">
+                <th className="border border-gray-200 px-4 py-2">Name</th>
+                <th className="border border-gray-200 px-4 py-2">Email</th>
+                <th className="border border-gray-200 px-4 py-2">Role</th>
               </tr>
-            ) : (
-              users.map((user) => (
-                <tr key={user.id}>
-                  <td className="border border-gray-200 px-4 py-2">
-                    {user.name}
-                  </td>
-                  <td className="border border-gray-200 px-4 py-2">
-                    {user.email}
-                  </td>
-                  <td className="border border-gray-200 px-4 py-2">
-                    {user.email === currentUser?.email ? (
-                      <span>{user.role}</span>
-                    ) : (
-                      <Select
-                        value={user.role}
-                        onValueChange={(value) =>
-                          changeRole(user.id, value as "MEMBER" | "MANAGER")
-                        }
-                      >
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Select role" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="MEMBER">Member</SelectItem>
-                          <SelectItem value="MANAGER">Manager</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    )}
+            </thead>
+            <tbody>
+              {users.length === 0 ? (
+                <tr>
+                  <td colSpan={3} className="text-center py-4">
+                    No users found.
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
-
-      {loading && <p className="mt-4 text-gray-500">Loading users...</p>}
+              ) : (
+                users.map((user) => (
+                  <tr key={user.id}>
+                    <td className="border border-gray-200 px-4 py-2">
+                      {user.name}
+                    </td>
+                    <td className="border border-gray-200 px-4 py-2">
+                      {user.email}
+                    </td>
+                    <td className="border border-gray-200 px-4 py-2">
+                      {user.email === currentUser?.email ? (
+                        <span>{user.role}</span>
+                      ) : (
+                        <Select
+                          value={user.role}
+                          onValueChange={(value) =>
+                            changeRole(user.id, value as "MEMBER" | "MANAGER")
+                          }
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select role" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="MEMBER">Member</SelectItem>
+                            <SelectItem value="MANAGER">Manager</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      )}
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 }
